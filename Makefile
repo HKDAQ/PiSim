@@ -6,11 +6,14 @@ ZMQInclude= -I ToolDAQ/zeromq-4.0.7/include/
 BoostLib= -L ToolDAQ/boost_1_60_0/install/lib -lboost_date_time -lboost_serialization
 BoostInclude= -I ToolDAQ/boost_1_60_0/install/include
 
-DataModelInclude = 
-DataModelLib = 
+RootInclude=  -I ToolDAQ/root/include
+RootLib=   -L ToolDAQ/root/lib  -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread -m64
 
-MyToolsInclude =
-MyToolsLib = 
+DataModelInclude = $(RootInclude)
+DataModelLib = $(RootLib)
+
+MyToolsInclude = $(RootInclude)
+MyToolsLib = $(RootLib)
 
 all: lib/libMyTools.so lib/libToolChain.so lib/libStore.so include/Tool.h  lib/libServiceDiscovery.so lib/libDataModel.so lib/libLogging.so RemoteControl  NodeDaemon
  
