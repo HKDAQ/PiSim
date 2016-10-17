@@ -38,6 +38,8 @@ export LD_LIBRARY_PATH=`pwd`/lib:$LD_LIBRARY_PATH
 
 cd ..
 
+sudo apt-get --force-yes --assume-yes install git dpkg-dev cmake g++ gcc binutils libx11-dev libxpm-dev libxft-dev libxext-dev
+
 wget https://root.cern.ch/download/root_v5.34.34.source.tar.gz
 tar zxvf root_v5.34.34.source.tar.gz
 cd root
