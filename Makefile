@@ -7,7 +7,7 @@ BoostLib= -L ToolDAQ/boost_1_60_0/install/lib -lboost_date_time -lboost_serializ
 BoostInclude= -I ToolDAQ/boost_1_60_0/install/include
 
 RootInclude=  -I ToolDAQ/root/include
-RootLib=   -L ToolDAQ/root/lib  -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread -m64
+RootLib=   -L ToolDAQ/root/lib  -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread
 
 DataModelInclude = $(RootInclude)
 DataModelLib = $(RootLib)

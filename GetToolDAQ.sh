@@ -38,11 +38,11 @@ export LD_LIBRARY_PATH=`pwd`/lib:$LD_LIBRARY_PATH
 
 cd ..
 
-get https://root.cern.ch/download/root_v5.34.34.source.tar.gz
+wget https://root.cern.ch/download/root_v5.34.34.source.tar.gz
 tar zxvf root_v5.34.34.source.tar.gz
 cd root
 
-./configure --prefix=`pwd` --enable-rpath
+./configure --prefix=`pwd` --enable-rpath --with-x11-libdir=/usr/lib/arm-linux-gnueabihf/ --with-xpm-libdir=/usr/lib/arm-linux-gnueabihf/ --with-xft-libdir=/usr/lib/arm-linux-gnueabihf/ --with-xext-libdir=/usr/lib/arm-linux-gnueabihf/
 make
 make install
 
