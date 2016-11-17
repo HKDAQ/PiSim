@@ -17,6 +17,8 @@ bool EBUFEEReceiverSim::Initialise(std::string configfile, DataModel &data){
 
 bool EBUFEEReceiverSim::Execute(){
 
+  sleep(1);
+
   for(int card=0; card<20; card++){
     for(int channel=0; channel<20; channel++){
       if((rand() % 100)>20){

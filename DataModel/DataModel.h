@@ -10,6 +10,8 @@
 #include "Store.h"
 #include "Logging.h"
 #include "FEEData.h"
+#include "TriggerData.h"
+#include "TriggerBunch.h"
 
 #include <zmq.hpp>
 
@@ -28,7 +30,13 @@ class DataModel {
 
   zmq::context_t* context;
 
+  //EBU Data structures
   std::vector<FEEData*> Data;
+
+  //BrokerData structures
+  std::vector<TriggerData*> UnSortedTrigData;
+  std::map<long, TriggerBunch> TrigData;
+  long StartSlicetime;
 
  private:
 

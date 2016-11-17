@@ -153,8 +153,11 @@ void* EBUNetworkSend::TriggerThread(void* arg){
   zmq::socket_t Ireceive (*(args->context), ZMQ_PAIR);
   Ireceive.connect("inproc://processor2trigger");
   
-  zmq::socket_t indexsend(*(args->context), ZMQ_PAIR);
-  indexsend.bind("inproc://trigger2fulldata");
+  // zmq::socket_t indexsend(*(args->context), ZMQ_PAIR);
+  //indexsend.bind("inproc://trigger2fulldata");
+
+  zmq::socket_t trigsend(*(args->context), ZMQ_PUB);
+  trigsend.bind("tcp://*:55555");
   
   bool running=true;
   
@@ -165,7 +168,7 @@ void* EBUNetworkSend::TriggerThread(void* arg){
     
     std::istringstream iss(static_cast<char*>(comm.data()));
     std::string arg1="";
-    long long unsigned int arg2;
+    
     
     
     iss>>arg1;
@@ -174,6 +177,8 @@ void* EBUNetworkSend::TriggerThread(void* arg){
       //probably buffer input and poll out buffer to broker
       FEEData data;
       iss>>data.Time>>data.CardID>>data.ChannelID;  
+      //      std::cout<<"sending data "<<data.Time<<std::endl;
+      trigsend.send(comm);
       //std::cout<<data.Time<<std::endl;
       //send it
       
@@ -196,6 +201,8 @@ void* EBUNetworkSend::FullDataThread(void* arg){
   
   zmq::socket_t indexreceive (*(args->context), ZMQ_PAIR);
   indexreceive.connect("inproc://trigger2fulldata");
+
+  std::map<long, FEEData*> waveforms;
   
   bool running=true;
   
@@ -207,8 +214,6 @@ void* EBUNetworkSend::FullDataThread(void* arg){
     std::istringstream iss(static_cast<char*>(comm.data()));
     std::string arg1="";
     long long unsigned int arg2;
-   
-    std::deque<FEEData*> waveforms;
     
     iss>>arg1;
     
@@ -219,12 +224,30 @@ void* EBUNetworkSend::FullDataThread(void* arg){
 
       FEEData *data;
       data=reinterpret_cast<FEEData *>(arg2);
-      waveforms.push_back(data);
-      
+      waveforms[data->Time]=data;
+      //std::cout<<"data* = "<<data<<" : waveforms.at(i) = "<<waveforms.at(waveforms.size()-1)<<std::endl;
+      //std::cout<<"waveforms.size() = "<<waveforms.size()<<std::endl;
+      // delete data;
+      //      delete waveforms.at(waveforms.size()-1);
     }
     
-    else if(arg1=="Quit")running=false;
-    
+    else if(arg1=="Quit"){
+      
+      running=false;
+      
+      std::cout<<"waveforms size = "<<waveforms.size()<<std::endl;
+      for(std::map<long, FEEData*>::iterator mIter=waveforms.begin(); mIter!=waveforms.end(); ++mIter){
+	
+	
+	delete (mIter->second);
+	std::cout<<mIter->second->Time<<std::endl;
+	mIter->second=0;
+      } 
+      
+      waveforms.clear();
+      
+      std::cout<<"waveforms.size() = "<<waveforms.size()<<std::endl;
+    }    
   }
   
   pthread_exit(NULL);
