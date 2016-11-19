@@ -30,14 +30,16 @@ class DataModel {
 
   zmq::context_t* context;
 
-  //EBU Data structures
+  //RBU Data structures
   std::vector<FEEData*> Data;
 
   //BrokerData structures
   std::vector<TriggerData*> UnSortedTrigData;
   std::map<long, TriggerBunch> TrigData;
-  long StartSlicetime;
 
+  long StartSlicetime;
+  bool SNTrigger;
+  
  private:
 
 
@@ -48,6 +50,11 @@ class DataModel {
   
 };
 
-
+long mtime(){
+  struct timeval tp;
+  gettimeofday(&tp, NULL);
+  return (long)(tp.tv_sec * 1000000 + tp.tv_usec );
+}
 
 #endif
+

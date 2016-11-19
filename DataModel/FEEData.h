@@ -4,14 +4,16 @@
 #include <iostream>
 #include <vector>
 
+#include <zmq.hpp>
+
 class FEEData{
 
 
  public:
 
   FEEData();
-  bool Send();
-  bool Receive();
+  bool Send(zmq::socket_t &sock, bool sendmore=false);
+  bool Receive(zmq::socket_t &sock);
 
   std::vector<int> Data;
   long Time;

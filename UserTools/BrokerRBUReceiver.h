@@ -1,17 +1,19 @@
-#ifndef EBUDataConverter_H
-#define EBUDataConverter_H
+#ifndef BrokerRBUReceiver_H
+#define BrokerRBUReceiver_H
 
 #include <string>
 #include <iostream>
 
 #include "Tool.h"
 
-class EBUDataConverter: public Tool {
+#include <zmq.hpp>
+
+class BrokerRBUReceiver: public Tool {
 
 
  public:
 
-  EBUDataConverter();
+  BrokerRBUReceiver();
   bool Initialise(std::string configfile,DataModel &data);
   bool Execute();
   bool Finalise();
@@ -19,7 +21,7 @@ class EBUDataConverter: public Tool {
 
  private:
 
-
+  zmq::socket_t* trigreceive;
 
 
 

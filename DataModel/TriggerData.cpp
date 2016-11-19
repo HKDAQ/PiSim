@@ -7,13 +7,13 @@ TriggerData::TriggerData(){
 
 }
 
-bool TriggerData::Send(){
+bool TriggerData::Send(zmq::socket_t &sock){
 
   return true;
 
 }
 
-bool TriggerData::Receive(){
+bool TriggerData::Receive(zmq::socket_t &sock){
 
   return true;
 

@@ -4,14 +4,16 @@
 #include <iostream>
 #include <vector>
 
+#include <zmq.hpp>
+
 class TriggerData{
 
 
  public:
 
   TriggerData();
-  bool Send();
-  bool Receive();
+  bool Send(zmq::socket_t &sock);
+  bool Receive(zmq::socket_t &sock);
 
   long Time;
   int CardID;

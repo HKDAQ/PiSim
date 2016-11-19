@@ -1,17 +1,19 @@
-#ifndef EBUSNTrigger_H
-#define EBUSNTrigger_H
+#ifndef RBUSNTrigger_H
+#define RBUSNTrigger_H
 
 #include <string>
 #include <iostream>
 
 #include "Tool.h"
 
-class EBUSNTrigger: public Tool {
+#include <zmq.hpp>
+
+class RBUSNTrigger: public Tool {
 
 
  public:
 
-  EBUSNTrigger();
+  RBUSNTrigger();
   bool Initialise(std::string configfile,DataModel &data);
   bool Execute();
   bool Finalise();
@@ -19,7 +21,7 @@ class EBUSNTrigger: public Tool {
 
  private:
 
-
+  zmq::socket_t* SNReceive;
 
 
 

@@ -1,9 +1,9 @@
-#include "BrokerEBUReceiver.h"
+#include "BrokerRBUReceiver.h"
 
-BrokerEBUReceiver::BrokerEBUReceiver():Tool(){}
+BrokerRBUReceiver::BrokerRBUReceiver():Tool(){}
 
 
-bool BrokerEBUReceiver::Initialise(std::string configfile, DataModel &data){
+bool BrokerRBUReceiver::Initialise(std::string configfile, DataModel &data){
 
   if(configfile!="")  m_variables.Initialise(configfile);
   //m_variables.Print();
@@ -18,7 +18,7 @@ bool BrokerEBUReceiver::Initialise(std::string configfile, DataModel &data){
 }
 
 
-bool BrokerEBUReceiver::Execute(){
+bool BrokerRBUReceiver::Execute(){
 
 
   zmq::message_t comm;
@@ -38,7 +38,7 @@ bool BrokerEBUReceiver::Execute(){
 }
 
 
-bool BrokerEBUReceiver::Finalise(){
+bool BrokerRBUReceiver::Finalise(){
 
   return true;
 }

@@ -1,5 +1,5 @@
 #test1 DummyTool configfiles/DummyToolConfig
 #test2 DummyTool configfiles/DummyToolConfig
-BrokerEBUReceiver BrokerEBUReceiver NULL
+BrokerRBUReceiver BrokerRBUReceiver NULL
 BrokerTrigSorter BrokerTrigSorter NULL
 BrokerSimulatedTriggerDecision BrokerSimulatedTriggerDecision NULL

@@ -1,5 +1,5 @@
-#ifndef EBUFEEReceiverSim_H
-#define EBUFEEReceiverSim_H
+#ifndef RBUFEEReceiverSim_H
+#define RBUFEEReceiverSim_H
 
 #include <string>
 #include <iostream>
@@ -10,13 +10,14 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <vector>
+#include <sys/time.h>
 
-class EBUFEEReceiverSim: public Tool {
+class RBUFEEReceiverSim: public Tool {
 
 
  public:
 
-  EBUFEEReceiverSim();
+  RBUFEEReceiverSim();
   bool Initialise(std::string configfile,DataModel &data);
   bool Execute();
   bool Finalise();
@@ -25,6 +26,11 @@ class EBUFEEReceiverSim: public Tool {
  private:
 
   long simtime;
+  int sleeptime;
+  int cards;
+  int channels;
+  int prob;
+  int buffersize;
 
 };
 
