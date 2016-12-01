@@ -52,11 +52,9 @@ bool BrokerTrigSorter::Execute(){
 
   for(std::map<long,TriggerBunch>::iterator mIter=m_data->TrigData.begin(); mIter!=m_data->\
 	TrigData.end();++mIter){
-    std::cout<<"ID = "<<mIter->first<<" : starttime = "<<mIter->second.StartTime<<\
-      " : endtime = "<<mIter->second.EndTime<<" : number of entries = "<<mIter->second.Data.size()\
-	     <<std::endl;
+    //    std::cout<<"ID = "<<mIter->first<<" : starttime = "<<mIter->second.StartTime<<" : endtime = "<<mIter->second.EndTime<<" : number of entries = "<<mIter->second.Data.size()<<std::endl;
   }
-  std::cout<<"done"<<std::endl;
+  // std::cout<<"done"<<std::endl;
   return true;
 }
 

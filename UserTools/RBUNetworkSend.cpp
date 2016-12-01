@@ -27,9 +27,9 @@ bool RBUNetworkSend::Initialise(std::string configfile, DataModel &data){
   m_variables.Get("SubCatScanPeriod", args->subcatscanperiod);
      
   pthread_create (&thread[0], NULL, RBUNetworkSend::ProcessorThread, args);
-  pthread_create (&thread[1], NULL, RBUNetworkSend::TriggerThread, args);
-  pthread_create (&thread[2], NULL, RBUNetworkSend::FullDataThread, args);
-  pthread_create (&thread[3], NULL, RBUNetworkSend::SubCatThread, args);
+  //  pthread_create (&thread[1], NULL, RBUNetworkSend::TriggerThread, args);
+  //pthread_create (&thread[2], NULL, RBUNetworkSend::FullDataThread, args);
+  //pthread_create (&thread[3], NULL, RBUNetworkSend::SubCatThread, args);
 
   sleep(3);
   return true;
@@ -37,11 +37,11 @@ bool RBUNetworkSend::Initialise(std::string configfile, DataModel &data){
 
 
 bool RBUNetworkSend::Execute(){
-  long tt=mtime();
+  //  long tt=mtime();
   //  std::cout<<"imrunning , data size is"<<m_data->Data.size()<<std::endl;
 
   //////////////////////split data send ///////////////////
-  
+  /*  
     for(int i=0; i<m_data->Data.size(); i++){ // could send whole vector and leave splitting to processor thread 
 
     //throw data to worker thread
@@ -59,12 +59,12 @@ bool RBUNetworkSend::Execute(){
   }
 
   m_data->Data.clear();
-
+  */
   
   ////////////////////////////////////////////////////////////////
 
   ///////////////////bunch data send ///////////////////////////
-  /*
+  
   std::stringstream Datapointer;
   Datapointer<<"D "<<(m_data->Data);
 
@@ -73,13 +73,16 @@ bool RBUNetworkSend::Execute(){
 s" ,Datapointer.str().c_str()) ;
   Isend->send(message);
 
-  //std::cout<<"sending data to processor"<<m_data->Data.at(i)->Time<<std::endl;
+  if(m_data->Data==0)exit(0);
+  std::cout<<"sending data to processor"<<m_data->Data->Time<<" : "<<m_data->Data<<std::endl;
   //throw data to worker thread
   m_data->Data=0;
+
+  std::cout<<"sending data to processor"<<" : "<<m_data->Data<<std::endl;
 //////////////////////////////////////////////////////
 
-*/
-  std::cout<<"e2 "<<mtime()-tt<<std::endl;
+  
+  //std::cout<<"e2 "<<mtime()-tt<<std::endl;
   return true;
 }
 
@@ -135,7 +138,7 @@ void* RBUNetworkSend::ProcessorThread(void* arg){
   
   bool running=true;
 
-  std::deque<TriggerData*> trigdatabuff;
+  std::deque<TriggerBunch*> trigdatabuff;
   std::deque<zmq::message_t*> fulldatamessagebuff;
 
   zmq::pollitem_t items [] = {
@@ -157,68 +160,102 @@ void* RBUNetworkSend::ProcessorThread(void* arg){
       
       std::istringstream iss(static_cast<char*>(comm->data()));
       std::string arg1="";
-      long long unsigned int arg2;
-      
+      //      long long unsigned int arg2;
+      //uintptr_t arg2;
+      void* arg2;
+
       iss>>arg1;
       
-      if (arg1=="D"){
+       if (arg1=="D"){
+	 	
+	 iss>>std::hex>>arg2>>std::dec;
 	
-	iss>>std::hex>>arg2;
-	
-	//std::cout<<"debug 4"<<std::endl;
+	 //	iss>>arg2;
+	 //std::cout<<"debug 4 "<<arg2<<std::endl;
 	////do processing if still neeed
 	
-	FEEData *data;
-	data=reinterpret_cast<FEEData *>(arg2);
-	
+	FEEBunch *data;
+	data=static_cast<FEEBunch *>(arg2);
+	std::cout<<"in processor thrad "<<data->Time<<" : "<<data<<std::endl;	
+	std::stringstream ss;
+	ss<<data->Time;
+	if(ss.str().substr(0, 2).c_str() == "0x") exit(1);
+	//delete data;	
+/*
 	///////////////////////////////
-	//for(int i=0; i<data.size();i++){
-	  
+	TriggerBunch *trigbunch=new TriggerBunch();
+	trigbunch->StartTime=mtime();
+	for(int card=0; card<data->Data.size();card++){
+	  for(int channel=0; channel<data->Data.at(card)->Data.size(); channel++){
+	    TriggerData* trig=new TriggerData();
+	    trig->Time=data->Data.at(card)->Data.at(channel)->Time;
+	    trig->CardID=data->Data.at(card)->Data.at(channel)->CardID;
+	    trig->ChannelID=data->Data.at(card)->Data.at(channel)->ChannelID;
+	    trigbunch->Data.push_back(trig);
+	    if (trigbunch->StartTime<trig->Time) trigbunch->StartTime=trig->Time;
+	  }
+	}
+	trigbunch->Decision=false;
+	trigdatabuff.push_back(trigbunch);
+
+	/*	for (int i=0; i< trigbunch->Data.size();i++){
+	  std::cout<<"i= "<<i<<" : "<<trigbunch->Data.at(i)->Time<<std::endl;
+	}
+	std::cout<<"processor tribunch start time = "<<trigbunch->StartTime<<std::endl;
+	*/
+	///////////////////////////////////////////////
+	/* 
 	  TriggerData* trig=new TriggerData();
 	  trig->Time=data->Time;
 	  trig->CardID=data->CardID;
 	  trig->ChannelID=data->ChannelID;
 	  
 	  trigdatabuff.push_back(trig);
-	  //}
+	*/
+	  
 	//////////////////////////////
 	
-	//std::stringstream tmp;
+	//	std::stringstream tmp;
 	//tmp<< "D "<<data->Time<<" "<<data->CardID<<" "<<data->ChannelID;
-	//zmq::message_t message(tmp.str().length()+1);
+	//	zmq::message_t message(tmp.str().length()+1);
 	//snprintf ((char *) message.data(), tmp.str().length()+1 , "%s" ,tmp.str().c_str()) ;
 	//std::cout<<"debug 4.0"<<std::endl;
 	//trigsend.send(message);
+	  //////////////////////////////////////////////////////////
 	//std::cout<<"debug 4.1"<<std::endl;
 	//fulldatamessagebuff.push_back(comm);
-	  fulldatasend.send(*comm);
-	
-      }
+	// fulldatasend.send(*comm);
+      	  
+       }
       
       else if(arg1=="Quit")running=false;
       
     }
   
-    if((items[1].revents & ZMQ_POLLOUT) && running && trigdatabuff.size()>0){
+    /*    if((items[1].revents & ZMQ_POLLOUT) && running && trigdatabuff.size()>0){
       
       std::stringstream trigpointer;
       trigpointer<<"D "<<trigdatabuff.at(0);
+      std::cout<<"message to trigerthread "<<trigpointer.str()<<" : "<<trigdatabuff.at(0)->StartTime<<std::endl;
       
       zmq::message_t message(trigpointer.str().length()+1);
       snprintf((char *) message.data(), trigpointer.str().length()+1 ,"%s" ,trigpointer.str().c_str()) ;
       trigsend.send(message);
       
       //remove element 0
+
+      // for(int i=0; i<trigdatabuff.size(); i++)	std::cout<<"i= "<<i<<" : "<<trigdatabuff.at(i)<<std::endl;
       trigdatabuff.pop_front();
+      //for(int i=0; i<trigdatabuff.size(); i++)  std::cout<<"i= "<<i<<" : "<<trigdatabuff.at(i)<<std::endl;
     }
-    
-    if((items[2].revents & ZMQ_POLLOUT) && running && fulldatamessagebuff.size()>0){
+    */
+    //    if((items[2].revents & ZMQ_POLLOUT) && running && fulldatamessagebuff.size()>0){
       
-      fulldatasend.send(*(fulldatamessagebuff.at(0)));
+      //     fulldatasend.send(*(fulldatamessagebuff.at(0)));
       
       //remove element 0
-      fulldatamessagebuff.pop_front();
-    }
+      //fulldatamessagebuff.pop_front();
+    //}
     
   }
   
@@ -229,6 +266,7 @@ void* RBUNetworkSend::ProcessorThread(void* arg){
   trigdatabuff.clear();
 
   for (int i=0; i<fulldatamessagebuff.size(); i++){
+    // need to properly delete the data not just the message pointer
     delete fulldatamessagebuff.at(i);
     fulldatamessagebuff.at(i)=0;
   }
@@ -266,32 +304,36 @@ void* RBUNetworkSend::TriggerThread(void* arg){
   trigsend.bind(tmp.str().c_str());
   
   bool running=true;
-
+  
   while(running){
-      
-      zmq::message_t comm;
-      Ireceive.recv(&comm);
-      
-      std::istringstream iss(static_cast<char*>(comm.data()));
-      std::string arg1="";
-      long long unsigned int arg2;
-      
-      iss>>arg1;
-      
+    
+    zmq::message_t comm;
+    Ireceive.recv(&comm);
+    
+    std::istringstream iss(static_cast<char*>(comm.data()));
+    std::string arg1="";
+    long long unsigned int arg2;
+    std::cout<<"trigthread message received "<<iss.str()<<std::endl;    
+
+
+    iss>>arg1;
+    
     if (arg1=="D"){
       
       iss>>std::hex>>arg2;
-
-      //std::cout<<"debug 4"<<std::endl;
-      ////do processing if still neeed
-
-      TriggerData *trig;
-      trig=reinterpret_cast<TriggerData*>(arg2);
       
+      
+      ////do processing if still neeed
+      
+      TriggerBunch *trig;
+      trig=reinterpret_cast<TriggerBunch*>(arg2);
+      
+      std::cout<<"sending data "<<trig->StartTime<<" : "<<trig<<std::endl;
       trig->Send(trigsend);
-      //iss>>data.Time>>data.CardID>>data.ChannelID;  
+      //iss>>trig->Time>>trig->CardID>>trig->ChannelID;  
       //std::cout<<"sending data "<<trig->Time<<std::endl;
-      //    trigsend.send(comm);
+      //trigsend.send(comm);
+      delete trig;
       //std::cout<<data.Time<<std::endl;
       //send it
       
@@ -320,7 +362,7 @@ void* RBUNetworkSend::FullDataThread(void* arg){
   tmp<<"tcp://*:"<<args->fulldataport;
   Irep.bind("tcp://*:66666");
 
-  std::map<long, FEEData*> waveforms;
+  std::map<long, FEEBunch*> waveforms;
   long lastpreen=0;
   
   zmq::pollitem_t items [] = {
@@ -335,7 +377,7 @@ void* RBUNetworkSend::FullDataThread(void* arg){
 
     zmq::poll(&items[0], 3, args->bufferdeleteperiod); //currenly buffer clean run every time data requested
 
-    if (items [0].revents & ZMQ_POLLIN) {
+    if (items [0].revents & ZMQ_POLLIN) { // getting new data form processor
       
       zmq::message_t comm;
       Ireceive.recv(&comm);
@@ -351,8 +393,8 @@ void* RBUNetworkSend::FullDataThread(void* arg){
 	
 	////do processing if still neeed
 	
-	FEEData *data;
-	data=reinterpret_cast<FEEData *>(arg2);
+	FEEBunch *data;
+	data=reinterpret_cast<FEEBunch *>(arg2);
 	waveforms[data->Time]=data;
 	//std::cout<<"data* = "<<data<<" : waveforms.at(i) = "<<waveforms.at(waveforms.size()-1)<<std::endl;
 	//std::cout<<"waveforms.size() = "<<waveforms.size()<<std::endl;
@@ -365,7 +407,7 @@ void* RBUNetworkSend::FullDataThread(void* arg){
 	running=false;
 	
 	//std::cout<<"waveforms size = "<<waveforms.size()<<std::endl;
-	for(std::map<long, FEEData*>::iterator mIter=waveforms.begin(); mIter!=waveforms.end(); ++mIter){
+	for(std::map<long, FEEBunch*>::iterator mIter=waveforms.begin(); mIter!=waveforms.end(); ++mIter){
 	  
 	  delete (mIter->second);
 	  //std::cout<<mIter->second->Time<<std::endl;
@@ -436,22 +478,24 @@ void* RBUNetworkSend::FullDataThread(void* arg){
 
       for(long time=StartTime;time<=EndTime;time++){
         
-	std::map<long, FEEData*>::iterator it;
+	std::map<long, FEEBunch*>::iterator it;
         it=waveforms.find(time);
-	if(it!=waveforms.end())	waveforms.erase(it);
-	
+	if(it!=waveforms.end()){
+	  delete it->second;
+	  waveforms.erase(it);
+	}	  
       }
-
+      
     }
-   
-     
+    
+    
     // fail safe if havent got drop message to delete old memoryif greate than 50s old
     if(lastpreen<time(NULL)-2){
       lastpreen=(long)time(NULL);
-      printf("before waveforms size = %i\n",(int)waveforms.size());
+      //printf("before waveforms size = %i\n",(int)waveforms.size());
       long currenttime=mtime();
       std::vector<long> deletelist;
-      for(std::map<long, FEEData*>::iterator mIter=waveforms.begin();mIter!=waveforms.end();++mIter){
+      for(std::map<long, FEEBunch*>::iterator mIter=waveforms.begin();mIter!=waveforms.end();++mIter){
 	if (mIter->first<currenttime-args->bufferdeletetimeout) deletelist.push_back(mIter->first);
 	//      std::cout<<mIter->first<<std::endl;
       }

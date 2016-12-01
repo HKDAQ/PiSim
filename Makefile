@@ -1,13 +1,13 @@
-ToolDAQFrameworkPath=ToolDAQ/ToolDAQFramework
+ToolDAQFrameworkPath=../ToolDAQFramework/ToolDAQ/ToolDAQFramework
 
-ZMQLib= -L ToolDAQ/zeromq-4.0.7/lib -lzmq 
-ZMQInclude= -I ToolDAQ/zeromq-4.0.7/include/ 
+ZMQLib= -L ../ToolDAQFramework/ToolDAQ/zeromq-4.0.7/lib -lzmq 
+ZMQInclude= -I ../ToolDAQFramework/ToolDAQ/zeromq-4.0.7/include/ 
 
-BoostLib= -L ToolDAQ/boost_1_60_0/install/lib -lboost_date_time -lboost_serialization
-BoostInclude= -I ToolDAQ/boost_1_60_0/install/include
+BoostLib= -L ../ToolDAQFramework/ToolDAQ/boost_1_60_0/install/lib -lboost_date_time -lboost_serialization
+BoostInclude= -I ../ToolDAQFramework/ToolDAQ/boost_1_60_0/install/include
 
-RootInclude=  -I ToolDAQ/root/include
-RootLib=   -L ToolDAQ/root/lib  -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread
+RootInclude=  -I ../ToolDAQFramework/ToolDAQ/root/include
+RootLib=   -L ../ToolDAQFramework/ToolDAQ/root/lib  -lCore -lCint -lRIO -lNet -lHist -lGraf -lGraf3d -lGpad -lTree -lRint -lPostscript -lMatrix -lMathCore -lThread -pthread -lm -ldl -rdynamic -pthread
 
 DataModelInclude = $(RootInclude)
 DataModelLib = $(RootLib)
@@ -48,7 +48,11 @@ lib/libDataModel.so: lib/libStore.so lib/libLogging.so
 
 	cp DataModel/DataModel.h include/
 	cp DataModel/FEEData.h include/
-	g++ -g -fPIC -shared DataModel/DataModel.cpp DataModel/FEEData.cpp -I include -L lib -lStore  -lLogging  -o lib/libDataModel.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
+	cp DataModel/FEEChData.h include/
+	cp DataModel/FEEBunch.h include/
+	cp DataModel/TriggerData.h include/
+	cp DataModel/TriggerBunch.h include/
+	g++ -g -fPIC -shared DataModel/DataModel.cpp DataModel/FEEData.cpp DataModel/FEEChData.cpp DataModel/FEEBunch.cpp DataModel/TriggerData.cpp DataModel/TriggerBunch.cpp -I include -L lib -lStore  -lLogging  -o lib/libDataModel.so $(DataModelInclude) $(DataModelLib) $(ZMQLib) $(ZMQInclude)  $(BoostLib) $(BoostInclude)
 
 lib/libMyTools.so: lib/libStore.so include/Tool.h lib/libDataModel.so lib/libLogging.so
 

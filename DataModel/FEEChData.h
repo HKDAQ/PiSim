@@ -1,24 +1,24 @@
-#ifndef FEEDATA_H
-#define FEEDATA_H
+#ifndef FEECHDATA_H
+#define FEECHDATA_H
 
 #include <iostream>
 #include <vector>
 
 #include <zmq.hpp>
-#include <FEEChData.h>
 
-class FEEData{
+class FEEChData{
 
 
  public:
 
-  FEEData();
-  ~FEEData();
+  FEEChData();
   bool Send(zmq::socket_t &sock, bool sendmore=false);
   bool Receive(zmq::socket_t &sock);
 
-  std::vector<FEEChData*> Data;
+  std::vector<int> Data;
   long Time;
+  int CardID;
+  int ChannelID;
 
  private:
 

@@ -20,7 +20,15 @@ bool BrokerRBUReceiver::Initialise(std::string configfile, DataModel &data){
 
 bool BrokerRBUReceiver::Execute(){
 
+  TriggerBunch* trigbunch= new TriggerBunch;
+  trigbunch->Receive(*trigreceive);
 
+  std::cout<<"received"<<std::endl;
+  /*  for (int i=0 ;i<trigbunch->Data.size();i++){
+    std::cout<<"i= "<<i<<" : "<<trigbunch->Data.at(i)->Time<<std::endl;
+  }
+  */
+  /*
   zmq::message_t comm;
   //  std::cout<<"waiting for data"<<std::endl;
   trigreceive->recv(&comm);
@@ -33,6 +41,7 @@ bool BrokerRBUReceiver::Execute(){
   std::string dump;
   iss>>dump>>tmp->Time>>tmp->CardID>>tmp->ChannelID;
   m_data->UnSortedTrigData.push_back(tmp);
+  */
 
   return true;
 }

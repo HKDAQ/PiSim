@@ -12,7 +12,7 @@ class TriggerData{
  public:
 
   TriggerData();
-  bool Send(zmq::socket_t &sock);
+  bool Send(zmq::socket_t &sock,bool sendmore=false);
   bool Receive(zmq::socket_t &sock);
 
   long Time;

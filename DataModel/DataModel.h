@@ -9,7 +9,7 @@
 
 #include "Store.h"
 #include "Logging.h"
-#include "FEEData.h"
+#include "FEEBunch.h"
 #include "TriggerData.h"
 #include "TriggerBunch.h"
 
@@ -31,7 +31,7 @@ class DataModel {
   zmq::context_t* context;
 
   //RBU Data structures
-  std::vector<FEEData*> Data;
+  FEEBunch* Data;
 
   //BrokerData structures
   std::vector<TriggerData*> UnSortedTrigData;

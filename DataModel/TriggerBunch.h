@@ -13,6 +13,7 @@ class TriggerBunch{
  public:
 
   TriggerBunch();
+  ~TriggerBunch();
   bool Send(zmq::socket_t &sock);
   bool Receive(zmq::socket_t &sock);
 
