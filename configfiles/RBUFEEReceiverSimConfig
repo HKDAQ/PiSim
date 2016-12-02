@@ -1,0 +1,7 @@
+# RBU FEEReceiverSim config file
+
+SleepTime 0 #10000 # artificial delay added to simulate input rate (in miscoseconds) 
+Cards 20 # number of FEE cards connected to RBU
+Channels 20 # number of ADC channels per FEE card
+Prob 100 # percentace probability of each channel being triggered e.g over threshold (out of 100)
+BufferSize 512 # number of bins in waveform data on one channel read

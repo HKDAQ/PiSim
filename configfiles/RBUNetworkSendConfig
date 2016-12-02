@@ -1,0 +1,7 @@
+# RBU NetworkSend config file
+
+TriggerPubPort 55555 # the port that RBU ust connect to to obtain trigger data 
+FullDataPort 66666 # the port thar the EBU can collect data from
+BufferDeleteTimeOut 50000000 # number of milliseconds of data that are stored in the RBU buffer
+BufferDeletePeriod 1000 # time (in milliseconds) between giving up on data requests and run buffer clean. note: that buffer is cleaned after every trigger response
+SubCatScanPeriod 1000 # the time (in milliseconds) between searching for new brokers to subscribe to

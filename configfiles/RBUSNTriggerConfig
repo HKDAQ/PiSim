@@ -1,0 +1,4 @@
+# RBU SNTrigger config file
+
+IP 127.0.0.1 # ip of SN trigger distributor
+Port 44444 # port of socket to connect to to get SN trigger
